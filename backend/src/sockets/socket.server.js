@@ -1,23 +1,69 @@
 const { Server } = require("socket.io");
+const cookie = require("cookie");
+const jwt = require("jsonwebtoken");
+const userModel = require("../models/user.model"); // Adjust the path as necessary
+// const generateAIResponse = require("../services/ai.service").generateAIResponse;
+const { generateAIResponse } = require("../services/ai.service");
+const messageModel = require("../models/message.model");
 
+const initSocketServer = httpServer => {
+  const io = new Server(httpServer, {});
 
+  // Socket Middleware to handle authentication or other pre-connection logic
+  io.use(async (socket, next) => {
+    const cookies = cookie.parse(socket.handshake.headers?.cookie || "");
 
-const initSocketServer = (httpServer) => {
-    const io = new Server(httpServer, {});
+    if (!cookies.token) {
+      return next(new Error("Authentication error: No token provided"));
+    }
 
-    io.use((socket, next) => {
-        
-    })
+    try {
+      const decoded = jwt.verify(cookies.token, process.env.JWT_SECRET);
+      const user = await userModel.findById(decoded.id);
+      if (!user) {
+        return next(new Error("Authentication error: User not found"));
+      }
 
-    io.on("connection", (socket) => {
-        console.log("A user connected");
+      console.log(user);
 
-        socket.on("disconnect", () => {
-            console.log("A user disconnected");
-        });
+      socket.user = user; // Attach user to socket for later use
 
-    })
-        
-}
+      next();
+    } catch (err) {
+      return next(new Error("Authentication error: Invalid token"));
+    }
+  });
+
+  io.on("connection", socket => {
+    console.log("A user connected");
+
+    socket.on("ai_user_request", async messagePayLoad => {
+      await messageModel.create({
+        chat: messagePayLoad.chat,
+        user: socket.user._id,
+        content: messagePayLoad.content,
+        role: "user",
+      });
+
+      const response = await generateAIResponse(messagePayLoad.content);
+
+      await messageModel.create({
+        chat: messagePayLoad.chat,
+        user: socket.user._id,
+        content: response,
+        role: "model",
+      });
+
+      socket.emit("ai_response", {
+        content: response,
+        chat: messagePayLoad.chat,
+      });
+    });
+
+    socket.on("disconnect", () => {
+      console.log("A user disconnected");
+    });
+  });
+};
 
 module.exports = initSocketServer;
