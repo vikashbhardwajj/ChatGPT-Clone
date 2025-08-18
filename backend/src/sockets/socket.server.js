@@ -45,7 +45,24 @@ const initSocketServer = httpServer => {
         role: "user",
       });
 
-      const response = await generateAIResponse(messagePayLoad.content);
+      const chatHistory = (
+        await messageModel
+          .find({
+            chat: messagePayLoad.chat,
+          })
+          .sort({ createdAt: -1 })
+          .limit(20)
+          .lean()
+      ).reverse();
+
+      const response = await generateAIResponse(
+        chatHistory.map(chat => {
+          return {
+            role: chat.role,
+            parts: [{ text: chat.content }],
+          };
+        })
+      );
 
       await messageModel.create({
         chat: messagePayLoad.chat,
@@ -53,6 +70,9 @@ const initSocketServer = httpServer => {
         content: response,
         role: "model",
       });
+
+      console.log("chatHistory: ", chatHistory);
+      console.log("response: ", response);
 
       socket.emit("ai_response", {
         content: response,
