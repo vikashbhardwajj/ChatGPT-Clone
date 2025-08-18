@@ -45,6 +45,7 @@ const initSocketServer = httpServer => {
         role: "user",
       });
 
+      /* Short Term Memory Using chatHistory */
       const chatHistory = (
         await messageModel
           .find({
@@ -55,6 +56,7 @@ const initSocketServer = httpServer => {
           .lean()
       ).reverse();
 
+      /* In documentation it is showed that in response gemini ai only need  role and parts so we are extracting it from chatHistory using map */
       const response = await generateAIResponse(
         chatHistory.map(chat => {
           return {
