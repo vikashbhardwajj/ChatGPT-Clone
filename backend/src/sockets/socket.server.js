@@ -5,6 +5,7 @@ const userModel = require("../models/user.model"); // Adjust the path as necessa
 // const generateAIResponse = require("../services/ai.service").generateAIResponse;
 const { generateAIResponse } = require("../services/ai.service");
 const messageModel = require("../models/message.model");
+const { createMemory, queryMemory } = require("../services/vector.service");
 
 const initSocketServer = httpServer => {
   const io = new Server(httpServer, {});
