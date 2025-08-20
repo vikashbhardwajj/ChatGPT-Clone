@@ -23,4 +23,11 @@ const queryMemory = async ({ queryVector, limit = 5, metadata }) => {
 
     filter: metadata ? { metadata } : undefined,
   });
+
+  return data.matches;
+};
+
+module.exports = {
+  createMemory,
+  queryMemory,
 };
