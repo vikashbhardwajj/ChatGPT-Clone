@@ -3,7 +3,7 @@ const cookie = require("cookie");
 const jwt = require("jsonwebtoken");
 const userModel = require("../models/user.model"); // Adjust the path as necessary
 // const generateAIResponse = require("../services/ai.service").generateAIResponse;
-const { generateAIResponse } = require("../services/ai.service");
+const { generateAIResponse, generateVector } = require("../services/ai.service");
 const messageModel = require("../models/message.model");
 const { createMemory, queryMemory } = require("../services/vector.service");
 
@@ -39,12 +39,23 @@ const initSocketServer = httpServer => {
     console.log("A user connected");
 
     socket.on("ai_user_request", async messagePayLoad => {
-      await messageModel.create({
-        chat: messagePayLoad.chat,
-        user: socket.user._id,
-        content: messagePayLoad.content,
-        role: "user",
-      });
+
+      // await messageModel.create({
+      //   chat: messagePayLoad.chat,
+      //   user: socket.user._id,
+      //   content: messagePayLoad.content,
+      //   role: "user",
+      // });
+
+      // await createMemory({
+      //   vectors: messagePayLoad.vectors,
+      //   metadata: messagePayLoad.metadata,
+      //   messageId: messagePayLoad.messageId,
+      // })
+
+      const vectors = await generateVector(messagePayLoad.content);
+
+      console.log("vectors: ", vectors);
 
       /* Short Term Memory Using chatHistory */
       const chatHistory = (
@@ -67,12 +78,12 @@ const initSocketServer = httpServer => {
         })
       );
 
-      await messageModel.create({
-        chat: messagePayLoad.chat,
-        user: socket.user._id,
-        content: response,
-        role: "model",
-      });
+      // await messageModel.create({
+      //   chat: messagePayLoad.chat,
+      //   user: socket.user._id,
+      //   content: response,
+      //   role: "model",
+      // });
 
       console.log("chatHistory: ", chatHistory);
       console.log("response: ", response);
