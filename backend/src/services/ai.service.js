@@ -32,7 +32,7 @@ const generateVector = async (content) => {
     }
   });
 
-  return response.embeddings;
+  return response.embeddings[0].values;
 }
 
 
