@@ -28,8 +28,6 @@ const initSocketServer = httpServer => {
         return next(new Error("Authentication error: User not found"));
       }
 
-      console.log(user);
-
       socket.user = user; // Attach user to socket for later use
 
       next();
@@ -54,8 +52,12 @@ const initSocketServer = httpServer => {
       const memory = await queryMemory({
         queryVector: vectors,
         limit: 3,
-        metadata: {},
+        metadata: {
+          user: socket.user._id,
+        },
       });
+
+      console.log(" queried memory: ", memory);
 
       await createMemory({
         vectors,
@@ -66,10 +68,6 @@ const initSocketServer = httpServer => {
           text: messagePayLoad.content,
         },
       });
-
-      
-
-      console.log( "memory: ", memory);
 
       /* Short Term Memory Using chatHistory */
       const chatHistory = (
@@ -82,15 +80,34 @@ const initSocketServer = httpServer => {
           .lean()
       ).reverse();
 
+      /* Short Term Memory */
+      const STM = chatHistory.map(chat => {
+        return {
+          role: chat.role,
+          parts: [{ text: chat.content }],
+        };
+      });
+
+      /* Long Term Memory */
+      const LTM = [
+        {
+          role: "user",
+          parts: [
+            {
+              text: `these are the some relevant pieces of information extracted from the previous conversations or chats of the user: use them to generate a response ${(memory && memory.length > 0)
+                ? memory.map(m => m.metadata?.text || '').join("\n")
+                : 'No previous context available'}`,
+            },
+          ],
+        },
+      ];
+
+      console.log("Long Term Memory: ", LTM[0]);
+      console.log("Short Term Memory: ", STM[0]);
+
       /* In documentation it is showed that in response gemini ai only need  role and parts so we are extracting it from chatHistory using map */
-      const response = await generateAIResponse(
-        chatHistory.map(chat => {
-          return {
-            role: chat.role,
-            parts: [{ text: chat.content }],
-          };
-        })
-      );
+      /* giving both Long and Short Term Memory to AI */
+      const response = await generateAIResponse([...LTM, ...STM]);
 
       const responseMessage = await messageModel.create({
         chat: messagePayLoad.chat,
@@ -110,9 +127,6 @@ const initSocketServer = httpServer => {
           text: response,
         },
       });
-
-      // console.log("chatHistory: ", chatHistory);
-      // console.log("response: ", response);
 
       socket.emit("ai_response", {
         content: response,
