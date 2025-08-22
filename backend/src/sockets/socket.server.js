@@ -51,16 +51,25 @@ const initSocketServer = httpServer => {
 
       const vectors = await generateVector(messagePayLoad.content);
 
+      const memory = await queryMemory({
+        queryVector: vectors,
+        limit: 3,
+        metadata: {},
+      });
+
       await createMemory({
         vectors,
         messageId: userMessage._id,
         metadata: {
           chatId: messagePayLoad.chat,
           userId: socket.user._id,
+          text: messagePayLoad.content,
         },
       });
 
-      console.log("vectors: ", vectors);
+      
+
+      console.log( "memory: ", memory);
 
       /* Short Term Memory Using chatHistory */
       const chatHistory = (
@@ -98,6 +107,7 @@ const initSocketServer = httpServer => {
         metadata: {
           chatId: messagePayLoad.chat,
           userId: socket.user._id,
+          text: response,
         },
       });
 

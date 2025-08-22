@@ -22,6 +22,7 @@ const queryMemory = async ({ queryVector, limit = 5, metadata }) => {
     topK: limit,
 
     filter: metadata ? { metadata } : undefined,
+    includeMetadata: true,
   });
 
   return data.matches;
