@@ -15,13 +15,13 @@ const initSocketServer = httpServer => {
 
   // Socket Middleware to handle authentication or other pre-connection logic
   io.use(async (socket, next) => {
-    const cookies = cookie.parse(socket.handshake.headers?.cookie || "");
-
-    if (!cookies.token) {
-      return next(new Error("Authentication error: No token provided"));
-    }
-
     try {
+      const cookies = cookie.parse(socket.handshake.headers?.cookie || "");
+
+      if (!cookies.token) {
+        return next(new Error("Authentication error: No token provided"));
+      }
+
       const decoded = jwt.verify(cookies.token, process.env.JWT_SECRET);
       const user = await userModel.findById(decoded.id);
       if (!user) {
@@ -40,105 +40,108 @@ const initSocketServer = httpServer => {
     console.log("A user connected");
 
     socket.on("ai_user_request", async messagePayLoad => {
-      // here userMessage and vectors are done in parallel using Promise.all
-      const [userMessage, vectors] = await Promise.all([
-        messageModel.create({
-          chat: messagePayLoad.chat,
-          user: socket.user._id,
-          content: messagePayLoad.content,
-          role: "user",
-        }),
-        generateVector(messagePayLoad.content),
-      ]);
-
-
-      const memory = await queryMemory({
-        queryVector: vectors,
-        limit: 3,
-        metadata: {
-          user: socket.user._id,
-        },
-      });
-
-
-      // here  chatHistory and createMemory are done in parallel using Promise.all
-      const [chatHistory] = await Promise.all([
-        /* Short Term Memory Using chatHistory */
-        messageModel
-          .find({
+      try {
+        // here userMessage and vectors are done in parallel using Promise.all
+        const [userMessage, vectors] = await Promise.all([
+          messageModel.create({
             chat: messagePayLoad.chat,
-          })
-          .sort({ createdAt: -1 })
-          .limit(20)
-          .lean()
-          .then(docs => docs.reverse()),
+            user: socket.user._id,
+            content: messagePayLoad.content,
+            role: "user",
+          }),
+          generateVector(messagePayLoad.content),
+        ]);
 
-        /* save vector data in Pinecone database using createMemory */
-        createMemory({
-          vectors,
-          messageId: userMessage._id,
+        const memory = await queryMemory({
+          queryVector: vectors,
+          limit: 3,
+          metadata: {
+            user: socket.user._id,
+          },
+        });
+
+        // here  chatHistory and createMemory are done in parallel using Promise.all
+        const [chatHistory] = await Promise.all([
+          /* Short Term Memory Using chatHistory */
+          messageModel
+            .find({
+              chat: messagePayLoad.chat,
+            })
+            .sort({ createdAt: -1 })
+            .limit(20)
+            .lean()
+            .then(docs => docs.reverse()),
+
+          /* save vector data in Pinecone database using createMemory */
+          createMemory({
+            vectors,
+            messageId: userMessage._id,
+            metadata: {
+              chatId: messagePayLoad.chat,
+              userId: socket.user._id,
+              text: messagePayLoad.content,
+            },
+          }),
+        ]);
+
+        // STM and LTM can be prepared in parallel using promise.all
+        /* Short Term Memory */
+        /* In documentation it is showed that in response gemini ai only need  role and parts so we are extracting it from chatHistory using map */
+        const STM = chatHistory.map(chat => {
+          return {
+            role: chat.role,
+            parts: [{ text: chat.content }],
+          };
+        });
+
+        /* Long Term Memory */
+        const LTM = [
+          {
+            role: "user",
+            parts: [
+              {
+                text: `these are the some relevant pieces of information extracted from the previous conversations or chats of the user: use them to generate a response ${
+                  memory && memory.length > 0
+                    ? memory.map(m => m.metadata?.text || "").join("\n")
+                    : "No previous context available"
+                }`,
+              },
+            ],
+          },
+        ];
+
+        /* giving both Long and Short Term Memory to AI */
+        const response = await generateAIResponse([...LTM, ...STM]);
+
+        // here responseMessage and responseVectors are done in parallel using Promise.all
+        const [responseMessage, responseVectors] = await Promise.all([
+          messageModel.create({
+            chat: messagePayLoad.chat,
+            user: socket.user._id,
+            content: response,
+            role: "model",
+          }),
+          generateVector(response),
+        ]);
+
+        await createMemory({
+          vectors: responseVectors,
+          messageId: responseMessage._id,
           metadata: {
             chatId: messagePayLoad.chat,
             userId: socket.user._id,
-            text: messagePayLoad.content,
+            text: response,
           },
-        }),
-      ]);
+        });
 
-      // STM and LTM can be prepared in parallel using promise.all
-      /* Short Term Memory */
-      /* In documentation it is showed that in response gemini ai only need  role and parts so we are extracting it from chatHistory using map */
-      const STM = chatHistory.map(chat => {
-        return {
-          role: chat.role,
-          parts: [{ text: chat.content }],
-        };
-      });
-
-      /* Long Term Memory */
-      const LTM = [
-        {
-          role: "user",
-          parts: [
-            {
-              text: `these are the some relevant pieces of information extracted from the previous conversations or chats of the user: use them to generate a response ${
-                memory && memory.length > 0
-                  ? memory.map(m => m.metadata?.text || "").join("\n")
-                  : "No previous context available"
-              }`,
-            },
-          ],
-        },
-      ];
-
-      /* giving both Long and Short Term Memory to AI */
-      const response = await generateAIResponse([...LTM, ...STM]);
-
-      // here responseMessage and responseVectors are done in parallel using Promise.all
-      const [responseMessage, responseVectors] = await Promise.all([
-        messageModel.create({
-          chat: messagePayLoad.chat,
-          user: socket.user._id,
+        socket.emit("ai_response", {
           content: response,
-          role: "model",
-        }),
-        generateVector(response),
-      ]);
-
-      await createMemory({
-        vectors: responseVectors,
-        messageId: responseMessage._id,
-        metadata: {
-          chatId: messagePayLoad.chat,
-          userId: socket.user._id,
-          text: response,
-        },
-      });
-
-      socket.emit("ai_response", {
-        content: response,
-        chat: messagePayLoad.chat,
-      });
+          chat: messagePayLoad.chat,
+        });
+      } catch (error) {
+        console.error("AI request failed:", err);
+        socket.emit("ai_error", { error: "AI request failed. Try again." });
+      }
     });
 
     socket.on("disconnect", () => {
