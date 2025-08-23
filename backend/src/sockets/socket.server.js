@@ -10,6 +10,32 @@ const {
 const messageModel = require("../models/message.model");
 const { createMemory, queryMemory } = require("../services/vector.service");
 
+const buildSTM =  chatHistory => {
+  return chatHistory.map(chat => {
+    return {
+      role: chat.role,
+      parts: [{ text: chat.content }],
+    };
+  });
+};
+
+const buildLTM = memory => {
+  return [
+    {
+      role: "user",
+      parts: [
+        {
+          text: `These are relevant pieces of information extracted from the user's past conversations. Use them only if they help improve your response ${
+            memory && memory.length > 0
+              ? memory.map(m => m.metadata?.text || "").join("\n")
+              : "No previous context available"
+          }`,
+        },
+      ],
+    },
+  ];
+};
+
 const initSocketServer = httpServer => {
   const io = new Server(httpServer, {});
 
@@ -87,28 +113,10 @@ const initSocketServer = httpServer => {
         // STM and LTM can be prepared in parallel using promise.all
         /* Short Term Memory */
         /* In documentation it is showed that in response gemini ai only need  role and parts so we are extracting it from chatHistory using map */
-        const STM = chatHistory.map(chat => {
-          return {
-            role: chat.role,
-            parts: [{ text: chat.content }],
-          };
-        });
+        const STM = buildSTM(chatHistory);
 
         /* Long Term Memory */
-        const LTM = [
-          {
-            role: "user",
-            parts: [
-              {
-                text: `these are the some relevant pieces of information extracted from the previous conversations or chats of the user: use them to generate a response ${
-                  memory && memory.length > 0
-                    ? memory.map(m => m.metadata?.text || "").join("\n")
-                    : "No previous context available"
-                }`,
-              },
-            ],
-          },
-        ];
+        const LTM = buildLTM(memory);
 
         /* giving both Long and Short Term Memory to AI */
         const response = await generateAIResponse([...LTM, ...STM]);
