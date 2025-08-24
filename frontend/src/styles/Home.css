@@ -1,6 +1,9 @@
 .home-container {
   height: 100vh;
 }
+.home-container .sidebar {
+  border-right: 1px solid #333;
+}
 .home-container .sidebar .fixed_top {
   border-bottom: 1px solid #333;
   padding-bottom: 2rem;
