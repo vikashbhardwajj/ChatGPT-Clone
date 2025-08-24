@@ -11,14 +11,14 @@ const Home = () => {
   console.log(isSodebar);
 
   return (
-    <div className="home-container w-full flex h-screen bg-[#212121] text-white ">
+    <div className="home-container flex  w-full  bg-[#212121] text-white ">
       <div
-        className="sidebar p-2 py-2 w-[55px] hover:w-[13%] transition-all duration-175 bg-[#181818] h-full  overflow-hidden "
+        className="sidebar  p-2 py-2 w-[55px] hover:w-[320px] transition-all duration-175 bg-[#181818] h-full  overflow-hidden"
         onMouseEnter={tooggleSidebar}
         onMouseLeave={tooggleSidebar}
-       >
+      >
         <div className="fixed_top   w-full flex flex-col gap-2  ">
-          <div className="top_section  flex gap-4 justify-between items-center">
+          <div className="top_section   flex gap-4 justify-between items-center">
             <div
               className={`svg back_hover   flex justify-center items-center ${
                 isSodebar ? "translate-x-0" : "-translate-x-2"
@@ -104,7 +104,9 @@ const Home = () => {
               </svg>
             </div>
 
-            <div className="close back_hover">close</div>
+            <div className="close back_hover">
+              <i className="ri-close-fill text-3xl"></i>
+            </div>
           </div>
 
           <div className="new_chat back_hover flex items-center cursor-pointer ">
@@ -156,10 +158,106 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="content h-full ">
-        <h1>App</h1>
-       
-        
+      <div className="content flex flex-col justify-center  w-full relative h-[100vh]  ">
+        <div className="top  flex gap-4 justify-center items-center text-xl z-20 relative mt-3 ml-3 w-fit">
+          <i className="ri-menu-unfold-fill lg:hidden"></i>
+
+          <h1 className="back_hover  ">chatVerse</h1>
+        </div>
+
+        <div className="message_section  p-4 mx-auto mt-[3rem] flex flex-col w-full md:w-[80%] lg:w-1/2  h-[100vh] gap-4   ">
+          <div className="user_message self-end max-w-[72%] md:max-w-[60vw] lg:max-w-[30vw] ">
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus
+              odit laboriosam tempore est maiores ipsam facere? Assumenda
+              commodi minus modi numquam officiis quis accusantium aut dolorem
+              vero. Accusantium, dignissimos minima?asddddddd asdffffff Lorem
+              ipsum dolor sit amet consectetur adipisicing elit. Autem ad
+              officiis repudiandae eaque quibusdam eligendi veritatis facere.
+              Sed, corporis nihil? Quos eligendi temporibus, delectus, sapiente
+              id vero deserunt modi ad quae odio reprehenderit, dolores tenetur
+              fuga hic molestiae suscipit eaque! Atque magni maiores id
+              reiciendis voluptatibus voluptas facere quos illum obcaecati ad
+              cumque necessitatibus aliquid, minima aspernatur sint ullam
+              explicabo. Enim rerum commodi qui fugiat, suscipit mollitia nobis
+              eligendi blanditiis eaque laborum unde iure dignissimos nisi
+              dolorum ipsa vitae illo ad eveniet numquam aperiam rem? Aliquid
+              molestiae incidunt, vero consectetur vel ad nostrum labore
+              aspernatur inventore, natus molestias laboriosam magnam quod?
+              Ipsa, optio unde, sunt eaque blanditiis praesentium debitis fugit
+              nulla, voluptatem enim iusto cupiditate. Repudiandae reprehenderit
+              cupiditate quasi, debitis quidem quos ipsum iusto porro ipsam iure
+              recusandae, tempore vitae suscipit aliquid iste dolore quo magnam
+              et? Incidunt vitae nobis voluptatum quae recusandae. Voluptatum
+              maxime atque ad, quisquam assumenda saepe ducimus dolore expedita
+              nostrum id. Quia pariatur, nihil nisi architecto consequuntur
+              eveniet enim mollitia voluptas nemo quibusdam nostrum voluptatem
+              eos suscipit veniam sint accusamus harum. Quo inventore labore
+              voluptates. Ab quia, nostrum quo in eveniet iste illo ut molestiae
+              explicabo dolorum quasi a esse veniam quae mollitia asperiores
+              commodi facilis.
+            </p>
+          </div>
+          <div className="box">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta cum,
+            iste at iusto atque quaerat ad quia corrupti corporis
+            exercitationem, cumque inventore sit dolor repellat aliquam aperiam
+            animi modi fuga dolore architecto a asperiores recusandae. Deserunt
+            rem, accusantium at veritatis officiis id? Sed voluptate facere
+            similique ipsum! Architecto pariatur deserunt libero id vitae,
+            minima at dolor, dolores voluptas sit recusandae rerum inventore
+            veritatis atque aperiam aliquam quod repellendus ut dignissimos
+            fuga. Officiis aspernatur provident, debitis pariatur expedita
+            accusantium porro voluptatum, ipsam quia alias culpa sit cupiditate
+            consectetur placeat totam ratione beatae laborum. Veniam, omnis
+            corporis, impedit commodi ea veritatis quia reiciendis aspernatur
+            magnam ipsum laborum sed facere esse quidem maxime sequi ab id
+            dolor, illum voluptates? Necessitatibus velit nisi iste sequi
+            numquam laboriosam omnis, eligendi sed voluptates vel recusandae
+            quos cumque, aliquid vero quo quisquam fugit quae tempore dolorem.
+            Non vel id saepe facere laboriosam quo earum perspiciatis
+            repudiandae tempora, quibusdam neque ipsum alias amet, nulla
+            corporis soluta. Similique aliquid facere est nemo, vitae eligendi
+            eum rerum, illo itaque iure asperiores suscipit perferendis hic unde
+            dolorem tempore fuga repellat odio numquam deleniti magni eaque quam
+            libero eius. Libero atque expedita fugit dicta quaerat quia cum
+            incidunt? Nam placeat et repellendus exercitationem delectus
+            assumenda accusamus! Excepturi ex, minus aliquam a illum sunt amet
+            beatae aut, tenetur blanditiis ullam pariatur fugit voluptatibus.
+            Officiis perspiciatis, nisi similique molestiae architecto, earum
+            necessitatibus voluptatum obcaecati consectetur a consequuntur?
+            Exercitationem blanditiis rem provident expedita suscipit culpa est
+            corporis illo ea. Non ipsam eos, magnam quaerat officiis cumque
+            necessitatibus sunt, omnis aut, minus adipisci repellendus dolores
+            obcaecati mollitia illo dignissimos consectetur nulla cupiditate a!
+            Distinctio sit repudiandae nisi tempore, eveniet quia nulla, quod
+            rem, eum temporibus perspiciatis. Consectetur harum vitae officiis
+            nihil fugit saepe sunt aut blanditiis impedit laborum, quas labore
+            nobis et. Vero, illum asperiores! Voluptatibus corrupti cumque
+            eligendi qui beatae fugiat deserunt illo perferendis aliquid,
+            mollitia corporis labore ab unde non velit nam illum est vitae quis
+            libero nisi aperiam accusamus similique! Cupiditate et architecto,
+            beatae error ipsa eaque, voluptatibus exercitationem quasi labore
+            similique doloremque non dicta, omnis nobis. Reprehenderit dolorum
+            officia nesciunt fugit at totam. Neque laborum reprehenderit minus
+            in incidunt commodi excepturi. Ab magnam nihil voluptatibus, odit
+            soluta, in quis eos ut minus pariatur officiis, et rem ex quaerat
+            quia eum non similique perferendis optio nam porro repellat minima
+            deserunt atque. Rem in aliquam, soluta quam placeat porro.
+            Distinctio voluptatibus adipisci in vero?
+          </div>
+
+          <div className="search_bar   flex justify-center items-center gap-2">
+            <span className="absolute cursor-pointer right-10 md:right-15 sm:right-13  lg:right-16 flex justify-center items-center h-[20px] w-[20px] bg-amber-500 p-5 rounded-full">
+              <i className="ri-arrow-right-line text-2xl"></i>
+            </span>
+            <input
+              type="text"
+              placeholder="Ask anything..."
+              className=" w-[90%] md:[100%] py-5 px-4 rounded-full  focus:outline-none"
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

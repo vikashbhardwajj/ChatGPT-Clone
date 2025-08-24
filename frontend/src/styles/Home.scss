@@ -1,16 +1,7 @@
 .home-container {
-  .sidebar {
-    .back_hover {
-      cursor: pointer;
-      user-select: none;
-      transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
-      padding: 5px 0.7rem;
-      border-radius: 0.5rem;
-      &:hover {
-        background-color: rgba(255, 255, 255, 0.1) !important;
-      }
-    }
+  height: 100vh;
 
+  .sidebar {
     .fixed_top {
       border-bottom: 1px solid #333;
       padding-bottom: 2rem;
@@ -27,7 +18,7 @@
         transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
 
         .create_chat {
-          transition: all 0.1s ease-out ;
+          transition: all 0.1s ease-out;
         }
       }
 
@@ -73,5 +64,80 @@
         display: none;
       }
     }
+  }
+
+  .content {
+    // background-color: red;
+    // display: flex;
+
+    .search_bar {
+      position: absolute;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      //   width: calc(100% - 18rem);
+      max-width: 950px;
+      width: 100%;
+
+      input {
+        background-color: #333;
+        border: 1px solid #5555555c;
+      }
+    }
+
+    .message_section {
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+
+     
+      .user_message {
+        background-color: rgba(56, 55, 55, 0.493);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        color: white;
+        height: fit-content;
+        padding: 1rem;
+        padding-right: 0.5rem;
+        border-radius: 1rem;
+      }
+      .box {
+        // background-color: #bf1e1e;
+        height: fit-content;
+        width: 100%;
+
+        padding: 1rem;
+        padding-right: 0.5rem;
+        border-radius: 1rem;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: transparent;
+        border-radius: 2rem;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        background-clip: content-box;
+      }
+
+      &::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.35);
+      }
+
+     
+    }
+  }
+}
+
+.back_hover {
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  padding: 5px 0.7rem;
+  border-radius: 0.5rem;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
   }
 }

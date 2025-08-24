@@ -1,14 +1,5 @@
-.home-container .sidebar .back_hover {
-  cursor: pointer;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-          user-select: none;
-  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
-  padding: 5px 0.7rem;
-  border-radius: 0.5rem;
-}
-.home-container .sidebar .back_hover:hover {
-  background-color: rgba(255, 255, 255, 0.1) !important;
+.home-container {
+  height: 100vh;
 }
 .home-container .sidebar .fixed_top {
   border-bottom: 1px solid #333;
@@ -59,4 +50,65 @@
   width: 0;
   height: 0;
   display: none;
+}
+.home-container .content .search_bar {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 950px;
+  width: 100%;
+}
+.home-container .content .search_bar input {
+  background-color: #333;
+  border: 1px solid rgba(85, 85, 85, 0.3607843137);
+}
+.home-container .content .message_section {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+.home-container .content .message_section .user_message {
+  background-color: rgba(56, 55, 55, 0.493);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  color: white;
+  height: -moz-fit-content;
+  height: fit-content;
+  padding: 1rem;
+  padding-right: 0.5rem;
+  border-radius: 1rem;
+}
+.home-container .content .message_section .box {
+  height: -moz-fit-content;
+  height: fit-content;
+  width: 100%;
+  padding: 1rem;
+  padding-right: 0.5rem;
+  border-radius: 1rem;
+}
+.home-container .content .message_section::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 2rem;
+}
+.home-container .content .message_section::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  background-clip: content-box;
+}
+.home-container .content .message_section::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.back_hover {
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  padding: 5px 0.7rem;
+  border-radius: 0.5rem;
+}
+.back_hover:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
 }/*# sourceMappingURL=Home.css.map */
