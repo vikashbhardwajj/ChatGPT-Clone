@@ -1,0 +1,77 @@
+.home-container {
+  .sidebar {
+    .back_hover {
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+      padding: 5px 0.7rem;
+      border-radius: 0.5rem;
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+      }
+    }
+
+    .fixed_top {
+      border-bottom: 1px solid #333;
+      padding-bottom: 2rem;
+      //   box-shadow: 0 7px 6px -4px rgba(96, 95, 95, 0.25);
+      //   box-shadow: 1px 4px 5px rgba(95, 237, 19, 0.542);
+      position: relative;
+
+      .top_section {
+        padding: 0.5rem 0 !important;
+      }
+
+      .new_chat {
+        background-color: rgb(18, 40, 235);
+        transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+
+        .create_chat {
+          transition: all 0.1s ease-out ;
+        }
+      }
+
+      &::before {
+        content: "";
+        height: 3px;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        // background-color: #333;
+        background-color: rgb(18, 40, 235);
+        filter: blur(2px);
+        z-index: 1;
+        transform: translateY(10%);
+      }
+    }
+
+    .chats_section {
+      height: 100%;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+
+      &::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        background-clip: content-box;
+      }
+
+      &::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.35);
+      }
+
+      /* Remove scrollbar arrows (buttons) */
+      &::-webkit-scrollbar-button {
+        width: 0;
+        height: 0;
+        display: none;
+      }
+    }
+  }
+}
