@@ -130,9 +130,9 @@ const Home = () => {
             isSodebar ? "opacity-100" : "opacity-0"
           } transition-opacity duration-150`}
         >
-          <h2 className="opacity-70 pl-3">Chats</h2>
+          <h2 className="opacity-70 pl-3 mb-4">Chats</h2>
           <div className="chat my-1 back_hover">
-            <h3>chat1</h3>
+            <h3>chat1 Lorem ipsum dolor sit amet.</h3>
           </div>
           <div className="chat my-1 back_hover">
             <h3>chat1</h3>
