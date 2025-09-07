@@ -21,13 +21,16 @@ const Home = () => {
           <div className="top_section   flex gap-4 justify-between items-center">
             <div
               className={`svg back_hover   flex justify-center items-center ${
-                isSodebar ? "translate-x-0" : "-translate-x-2"
+                isSodebar ? "translate-x-0 " : "-translate-x-2"
               }  `}
             >
               <svg
                 width="32"
                 height="45"
                 viewBox="-15 -3 222.5 171.20636739949816"
+                className={` transition-transform duration-300 ${
+                  isSodebar ? " rotate-45 " : "rotate-0 "
+                }`}
               >
                 <defs id="SvgjsDefs2215">
                   <linearGradient id="SvgjsLinearGradient2220">
