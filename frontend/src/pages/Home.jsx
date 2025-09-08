@@ -13,7 +13,9 @@ const Home = () => {
   return (
     <div className="home-container flex  w-full  bg-[#212121] text-white ">
       <div
-        className="sidebar  p-2 py-2 w-[55px] hover:w-[320px] transition-all duration-175 bg-[#181818] h-full  overflow-hidden"
+        className={`sidebar  p-2 py-2 w-[55px] lg:hover:w-[320px] transition-all duration-175 bg-[#181818] h-full  overflow-hidden ${
+          isSodebar ? "w-[400px] block" : "hidden lg:block"
+        }`}
         onMouseEnter={tooggleSidebar}
         onMouseLeave={tooggleSidebar}
       >
@@ -163,7 +165,10 @@ const Home = () => {
 
       <div className="content flex flex-col justify-center  w-full relative h-[100vh]  ">
         <div className="top  flex gap-4 justify-center items-center text-xl z-20 relative mt-3 ml-3 w-fit">
-          <i className="ri-menu-unfold-fill lg:hidden"></i>
+          <i
+            className="ri-menu-unfold-fill lg:hidden"
+            onClick={tooggleSidebar}
+          ></i>
 
           <h1 className="back_hover  ">chatVerse</h1>
         </div>
