@@ -37,7 +37,15 @@ const buildLTM = memory => {
 };
 
 const initSocketServer = httpServer => {
-  const io = new Server(httpServer, {});
+  const io = new Server(httpServer, {
+    cors: {
+      origin: "http://localhost:5173", 
+      credentials: true,
+      // allowedHeaders: ["content-type", "Authorization"],
+      methods: ["GET", "POST"],
+      
+    }
+  });
 
   // Socket Middleware to handle authentication or other pre-connection logic
   io.use(async (socket, next) => {

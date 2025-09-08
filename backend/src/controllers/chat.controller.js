@@ -20,6 +20,21 @@ const createChat = async (req, res) => {
   });
 };
 
+const getChats = async (req, res) => {
+  const user = req.user; // User is set by authMiddleware
+
+  const chats = await chatModel.find({ user: user._id });
+  res.status(200).json({
+    chats: chats.map(chat => ({
+      id: chat._id,
+      title: chat.title,
+      lastActivity: chat.lastActivity,
+      user: chat.user,
+    })),
+  });
+};
+
 module.exports = {
   createChat,
+  getChats,
 };

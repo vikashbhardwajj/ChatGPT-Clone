@@ -1,14 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "../api/axiosConfig";
+import { asyncLoadChats } from "../store/actions/chatActions";
 import "../styles/Home.scss";
 
 const Home = () => {
   const [isSodebar, setIsSodebar] = useState(false);
+  const [message, setMessage] = useState("");
+  const chats = useSelector(state => state.chat.chats);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(asyncLoadChats());
+  }, []);
+
+  console.log(chats.map(chat => chat.title));
 
   const tooggleSidebar = () => {
     setIsSodebar(!isSodebar);
   };
 
-  console.log(isSodebar);
+  const submitHandler = e => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      const value = e.target.value.trim();
+      if (value) {
+        console.log("Enter key pressed:", value);
+      }
+      setMessage("");
+    }
+  };
 
   return (
     <div className="home-container flex  w-full  bg-[#212121] text-white ">
@@ -136,30 +158,14 @@ const Home = () => {
           } transition-opacity duration-150`}
         >
           <h2 className="opacity-70 pl-3 mb-4">Chats</h2>
-          <div className="chat my-1 back_hover">
-            <h3>chat1 Lorem ipsum dolor sit amet.</h3>
-          </div>
-          <div className="chat my-1 back_hover">
-            <h3>chat1</h3>
-          </div>
-          <div className="chat my-1 back_hover">
-            <h3>chat1</h3>
-          </div>
-          <div className="chat my-1 back_hover">
-            <h3>chat1</h3>
-          </div>
-          <div className="chat my-1 back_hover">
-            <h3>chat1</h3>
-          </div>
-          <div className="chat my-1 back_hover">
-            <h3>chat1</h3>
-          </div>
-          <div className="chat my-1 back_hover">
-            <h3>chat1</h3>
-          </div>
-          <div className="chat my-1 back_hover">
-            <h3>chat1</h3>
-          </div>
+
+          {chats &&
+            chats.map(chat => (
+              <div key={chat?._id || chat?.id} className="chat my-1 back_hover">
+                <h3>{chat?.title || "Untitled Chat"}</h3>
+               
+              </div>
+            ))}
         </div>
       </div>
 
@@ -263,6 +269,9 @@ const Home = () => {
               type="text"
               placeholder="Ask anything..."
               className=" w-[90%] md:[100%] py-5 px-4 rounded-full  focus:outline-none"
+              onKeyDown={submitHandler}
+              value={message}
+              onChange={e => setMessage(e.target.value)}
             />
           </div>
         </div>
