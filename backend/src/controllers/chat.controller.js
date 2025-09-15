@@ -1,4 +1,5 @@
 const chatModel = require("../models/chat.model");
+const messageModel = require("../models/message.model");
 
 const createChat = async (req, res) => {
   const { title } = req.body;
@@ -34,7 +35,28 @@ const getChats = async (req, res) => {
   });
 };
 
+
+
+const getMessages = async (req, res) => {
+  const chatId  = req.params.id;
+  
+
+  const messages = await messageModel.find({chat: chatId}).sort({ createdAt: 1 });
+
+  if (!messages) {
+    return res.status(404).json({ message: "Chat not found" });
+  }
+
+  res.status(200).json({
+    message: "Messages fetched successfully",
+    messages: messages
+  })
+
+
+}
+
 module.exports = {
   createChat,
   getChats,
+  getMessages
 };
