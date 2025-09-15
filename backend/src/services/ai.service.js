@@ -48,6 +48,7 @@ const generateAIResponse = async prompt => {
               - Use a teaching approach for technical or educational topics.  
               - Be concise but complete.  
               - Use analogies or simple examples for beginners.  
+              - Use icons/emojis wherever they enhance clarity or scannability (e.g., ✅ success, ⚠️ warnings, 💡 tips, 🔧 steps, etc).  
               
               Special Handling:
               - For comparisons (e.g., tools, technologies), include pros/cons, use cases, and recommendations.  
